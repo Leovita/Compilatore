@@ -1,0 +1,6 @@
+function g(x)
+    for i in range(10) using a,b,c do
+        print(a + b)
+    end
+
+end
