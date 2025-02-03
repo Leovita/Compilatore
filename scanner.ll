@@ -63,6 +63,9 @@ blank   [ \t]
 "end"    return yy::parser::make_END       (loc);
 "{"      { return yy::parser::make_LBRACE  (loc); }  
 "}"      { return yy::parser::make_RBRACE  (loc); }
+"["      { return yy::parser::make_LSQBRAC  (loc); }
+"]"      { return yy::parser::make_RSQBRAC  (loc); }
+"await"  { std::cout << "ho letto il token await\n"; return yy::parser::make_AWAIT(loc); }
 "yield"  { std::cout << "ho letto il token yield\n"; return yy::parser::make_YIELD(loc); }
 "set"    { std::cout << "ho letto il token set\n"; return yy::parser::make_SET(loc); }
 "for"    { std::cout << "ho letto il token for\n"; return yy::parser::make_FOR   (loc); }
@@ -71,7 +74,7 @@ blank   [ \t]
 "do"     { std::cout << "ho letto il token do\n";return yy::parser::make_DO    (loc); }
 "end"    { std::cout << "ho letto il token end\n"; return yy::parser::make_END   (loc); }
 "range"  { std::cout << "ho letto il token range\n"; return yy::parser::make_RANGE (loc); }
-
+"block"  { std::cout << "ho letto il token block\n"; return yy::parser::make_BLOCK (loc); }
 ;
 
 {num}    { errno = 0;

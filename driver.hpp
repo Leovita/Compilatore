@@ -56,6 +56,15 @@ public:
   lexval getLexVal() const;
 };
 
+class AwaitExprAST : public ExprAST {
+    ExprAST* expr;  // Espressione contenuta in "await"
+
+public:
+    AwaitExprAST(ExprAST* expr);
+    void visit() override;
+    lexval getLexVal() const;
+};
+
 /// IdeExprAST - Classe per la rappresentazione di riferimenti a identificatori
 class IdeExprAST : public ExprAST {
 private:
@@ -158,6 +167,16 @@ class SetExprAST : public ExprAST {
     void visit() override;  // Metodo per visitare il nodo
     lexval getLexVal() const;  // Restituisce sempre 0
   };
+
+class BlockExprAST : public ExprAST {
+  private:
+    std::vector<std::pair<std::string, ExprAST*>> Assignments;  // Lista di assegnamenti
+
+  public:
+    BlockExprAST(std::vector<std::pair<std::string, ExprAST*>> Assignments);  // Costruttore
+    void visit() override;  // Metodo per visitare il nodo
+    lexval getLexVal() const;  // Restituisce sempre 0
+};
 
 /// FunctionAST - Classe che rappresenta la definizione di una funzione
 class FunctionAST : public DefAST {

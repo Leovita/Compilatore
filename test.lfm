@@ -1,6 +1,6 @@
 function g(x)
-    for i in range(10) using a,b,c do
-        print(a + b)
+    for i in range(10) do
+        block [ a = yield 5; b = c; c = set {f = await 7}]
     end
 
 end

@@ -20,7 +20,6 @@ int driver::parse (const std::string &f)
 
 NumberExprAST::NumberExprAST(int Val): Val(Val) {};
 void NumberExprAST::visit() {
-  //*drv.outputTarget << std::get<int>(getLexVal()) << " ";
   *drv.outputTarget << "[" << Val << "]";
 };
 lexval NumberExprAST::getLexVal() const {
@@ -28,28 +27,33 @@ lexval NumberExprAST::getLexVal() const {
   return lval;
 };
 
-// driver.cpp
 
-// Implementazione di YieldExprAST
 YieldExprAST::YieldExprAST(ExprAST* Expr): Expr(Expr) {}
 
-// Il metodo visit scrive semplicemente il valore di Expr nel formato desiderato
 void YieldExprAST::visit() {
-  *drv.outputTarget << "[yield ";  // Output per rappresentare la keyword 'yield'
-  Expr->visit();                   // Visita l'espressione E
+  *drv.outputTarget << "[yield ";  
+  Expr->visit();                   
   *drv.outputTarget << "]";
 }
 
-// Restituisce il valore dell'espressione E
 lexval YieldExprAST::getLexVal() const {
-  return Expr->getLexVal();  // Il valore è lo stesso di E
+  return Expr->getLexVal();  
 }
 
-// driver.cpp
+
+AwaitExprAST::AwaitExprAST(ExprAST* expr)
+    : expr(std::move(expr)) {}
+void AwaitExprAST::visit() {
+  *drv.outputTarget << "[await ";  
+  expr->visit();                   
+  *drv.outputTarget << "]";
+}
+lexval AwaitExprAST::getLexVal() const {
+  return expr->getLexVal();  
+}
 
 // Implementazione della classe SetExprAST
 SetExprAST::SetExprAST(std::vector<std::pair<std::string, ExprAST*>> Assignments): Assignments(std::move(Assignments)) {}
-
 void SetExprAST::visit() {
     *drv.outputTarget << "[set ";  // Output per rappresentare l'inizio del set
 
@@ -62,8 +66,22 @@ void SetExprAST::visit() {
     *drv.outputTarget << "]";
 }
 
-// Restituisce sempre 0 come valore dell'espressione set
-lexval SetExprAST::getLexVal() const {
+
+
+BlockExprAST::BlockExprAST(std::vector<std::pair<std::string, ExprAST*>> Assignments): Assignments(std::move(Assignments)) {}
+void BlockExprAST::visit() {
+    *drv.outputTarget << "[block ";  // Output per rappresentare l'inizio del block
+
+    for (const auto& assignment : Assignments) {
+        *drv.outputTarget << assignment.first << " = ";  // Identificatore dell'assegnamento
+        assignment.second->visit();  // Visita l'espressione associata all'assegnamento
+        *drv.outputTarget << "; ";  // Aggiungi separatore ";"
+    }
+
+    *drv.outputTarget << "]";
+}
+// Restituisce sempre 0 come valore dell'espressione block
+lexval BlockExprAST::getLexVal() const {
   return 0;
 }
 
@@ -89,13 +107,11 @@ void BinaryExprAST::visit() {
       return;
     }
 
-    // Stampa l'assegnazione
     *drv.outputTarget << "[= ";
-    LHS->visit();  // Visita l'identificatore (LHS)
-    RHS->visit();  // Visita l'espressione (RHS)
+    LHS->visit();  
+    RHS->visit();  
     *drv.outputTarget << "]";
   } else {
-    // Per gli altri operatori, stampa come al solito
     *drv.outputTarget << drv.opening << Op << " ";
     LHS->visit();
     RHS->visit();

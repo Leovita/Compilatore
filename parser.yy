@@ -38,7 +38,10 @@ YY_DECL;
   EOF  0  "end of file"
   COLON      ":"
   YIELD      "yield"
+  AWAIT      "await"
   SEMICOLON  ";"
+  LSQBRAC    "["
+  RSQBRAC    "]"
   COMMA      ","
   MINUS      "-"
   PLUS       "+"
@@ -74,6 +77,7 @@ YY_DECL;
   RANGE      "range"
   LPAREN     "("
   RPAREN     ")"
+  BLOCK     "block"
 ;
 
 %token <std::string> IDENTIFIER "id"
@@ -152,6 +156,8 @@ expr:
 | YIELD expr             { $$ = new YieldExprAST($2); }
 | SET LBRACE bindings RBRACE   { $$ = new SetExprAST($3); }
 | for_expr                { $$ = $1; }
+| AWAIT expr             { $$ = new AwaitExprAST($2); }
+| BLOCK LSQBRAC bindings RSQBRAC  { $$ = new BlockExprAST($3); }
 ;
 
 
